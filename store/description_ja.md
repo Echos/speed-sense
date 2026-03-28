@@ -45,7 +45,7 @@ Web Audio API を使って再生中の動画の音声信号を解析します。
 
 **プライバシー**
 
-SpeedSense は個人データを一切収集しません。すべての処理はお使いのブラウザ内で完結します。詳細なプライバシーポリシー: https://echos0507.github.io/speed-sense/
+SpeedSense は個人データを一切収集しません。すべての処理はお使いのブラウザ内で完結します。詳細なプライバシーポリシー: https://echos.github.io/speed-sense/
 
 ---
 

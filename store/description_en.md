@@ -45,7 +45,7 @@ SpeedSense uses the Web Audio API to analyze the audio signal of any playing vid
 
 **Privacy**
 
-SpeedSense collects no personal data. Everything runs locally in your browser. See the full privacy policy at: https://echos0507.github.io/speed-sense/
+SpeedSense collects no personal data. Everything runs locally in your browser. See the full privacy policy at: https://echos.github.io/speed-sense/
 
 ---
 
