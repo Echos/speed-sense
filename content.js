@@ -206,7 +206,6 @@
       } catch (e) {
         // captureStream 自体が失敗した場合のみ createMediaElementSource にフォールバック
         // （EME/DRM 動画など）
-        console.warn('[SmartSpeed] captureStream failed, trying createMediaElementSource:', e);
         try {
           source = audioContext.createMediaElementSource(video);
           source.connect(audioContext.destination);
