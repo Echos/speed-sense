@@ -207,9 +207,20 @@
         // captureStream 自体が失敗した場合のみ createMediaElementSource にフォールバック
         // （EME/DRM 動画など）
         console.warn('[SmartSpeed] captureStream failed, trying createMediaElementSource:', e);
-        source = audioContext.createMediaElementSource(video);
-        source.connect(audioContext.destination);
-        usingCaptureStream = false;
+        try {
+          source = audioContext.createMediaElementSource(video);
+          source.connect(audioContext.destination);
+          usingCaptureStream = false;
+        } catch (e2) {
+          // DRM コンテンツは両方のメソッドがブロックされる → 音声解析を無効化
+          console.warn('[SmartSpeed] DRM content detected, audio analysis disabled on this page.');
+          audioContext.close();
+          audioContext  = null;
+          isInitialized = false;
+          // 30秒後まで再試行しない（ページ遷移やリロードで再挑戦）
+          setupAudioNextRetry = performance.now() + 30000;
+          return;
+        }
       }
 
       source.connect(analyser);
