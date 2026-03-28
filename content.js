@@ -215,8 +215,9 @@
           // DRM コンテンツは両方のメソッドがブロックされる → 音声解析を無効化
           console.warn('[SmartSpeed] DRM content detected, audio analysis disabled on this page.');
           audioContext.close();
-          audioContext  = null;
-          isInitialized = false;
+          audioContext       = null;
+          isInitialized      = false;
+          usingCaptureStream = false; // seeked ハンドラの再トリガーを防ぐ
           // 30秒後まで再試行しない（ページ遷移やリロードで再挑戦）
           setupAudioNextRetry = performance.now() + 30000;
           return;
