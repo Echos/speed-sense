@@ -4,7 +4,7 @@
 
 ## Short Description (max 132 chars)
 
-Auto-detects silence in videos and fast-forwards through it. Works on YouTube, Udemy, and any site with a video element.
+Auto-detects silence in videos and fast-forwards through it. Works on any site with a video element.
 
 ---
 
@@ -20,7 +20,7 @@ SpeedSense uses the Web Audio API to analyze the audio signal of any playing vid
 
 - Silence auto-skip — automatically fast-forwards during silent sections
 - Smooth speed ramping — speed changes are linearly interpolated over 400 ms to avoid jarring transitions
-- Works everywhere — YouTube, Udemy, Coursera, Netflix, Twitch, local files, and any site with a `<video>` element
+- Works everywhere — any site with a `<video>` element
 - Per-site speed memory — each domain remembers your preferred playback speed
 - Live waveform overlay — a real-time scrolling waveform and optional spectrogram appear directly on the video (draggable, stays inside the video frame)
 - Time saved counter — see exactly how much time you've saved in total
