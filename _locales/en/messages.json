@@ -1,0 +1,63 @@
+{
+  "extName": {
+    "message": "SpeedSense",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Auto-detects silence in videos and fast-forwards through it. Works on any site with a video element.",
+    "description": "Extension description shown in Chrome Web Store (max 132 chars)"
+  },
+
+  "statSavedLabel":  { "message": "Time Saved" },
+  "statSpeedLabel":  { "message": "Current Speed" },
+  "unitSec":         { "message": "sec" },
+  "unitMin":         { "message": "min" },
+  "unitHour":        { "message": "hr" },
+  "unitSecSuffix":   { "message": "sec" },
+
+  "statusDetecting": { "message": "Detecting video..." },
+  "statusNoVideo":   { "message": "Open a video page" },
+  "statusDisabled":  { "message": "SpeedSense is disabled" },
+  "statusSkipping":  { "message": "Skipping silence" },
+  "statusPlaying":   { "message": "Audio detected — playing" },
+
+  "sectionSpeed":    { "message": "Speed" },
+  "sectionSilence":  { "message": "Silence Detection" },
+  "sectionOverlay":  { "message": "Overlay" },
+  "sectionKeyboard": { "message": "Keyboard Shortcuts" },
+
+  "labelNormalSpeed":    { "message": "Normal Speed" },
+  "labelNormalSpeedSub": { "message": "with audio" },
+  "labelSkipSpeed":      { "message": "Skip Speed" },
+  "labelSkipSpeedSub":   { "message": "silence" },
+  "labelSeekSec":        { "message": "Seek Seconds" },
+  "labelSeekSecSub":     { "message": "back / forward" },
+  "labelSpeedStep":      { "message": "Speed Step" },
+  "labelSpeedStepSub":   { "message": "per key press" },
+  "labelThreshold":      { "message": "Threshold" },
+  "labelThresholdSub":   { "message": "volume sensitivity" },
+  "labelDelay":          { "message": "Delay" },
+  "labelDelaySub":       { "message": "before silence" },
+  "labelSpectrogram":        { "message": "Spectrogram" },
+  "labelSpectrogramSub":     { "message": "frequency view" },
+  "labelOverlaySpeedReset":    { "message": "On Speed Reset" },
+  "labelOverlaySpeedResetSub": { "message": "show at 1.0x" },
+
+  "kbSpeedUp":       { "message": "Speed +" },
+  "kbSpeedDown":     { "message": "Speed −" },
+  "kbToggle":        { "message": "Toggle ON/OFF" },
+  "kbToggleSub":     { "message": "SpeedSense" },
+  "kbThresholdUp":   { "message": "Threshold +" },
+  "kbThresholdDown": { "message": "Threshold −" },
+  "kbResetSpeed":    { "message": "Speed Reset" },
+  "kbResetSpeedSub": { "message": "1.0x toggle" },
+  "kbSeekBack":      { "message": "Seek Back" },
+  "kbSeekBackSub":   { "message": "−N sec" },
+  "kbSeekFwd":       { "message": "Seek Fwd" },
+  "kbSeekFwdSub":    { "message": "+N sec" },
+  "kbClearTitle":    { "message": "Clear", "description": "Tooltip for the clear-keybinding button" },
+
+  "btnSupport":    { "message": "♥ Support" },
+  "btnReset":      { "message": "Reset" },
+  "confirmReset":  { "message": "Reset saved time record?" }
+}

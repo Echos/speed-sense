@@ -1,0 +1,63 @@
+{
+  "extName": {
+    "message": "SpeedSense",
+    "description": "拡張機能名"
+  },
+  "extDescription": {
+    "message": "動画の無音区間を自動検出してスキップ。あらゆる動画サイトで動作するスピード拡張機能。",
+    "description": "Chrome ウェブストア用の説明文（最大132文字）"
+  },
+
+  "statSavedLabel":  { "message": "節約時間" },
+  "statSpeedLabel":  { "message": "現在の速度" },
+  "unitSec":         { "message": "秒" },
+  "unitMin":         { "message": "分" },
+  "unitHour":        { "message": "時間" },
+  "unitSecSuffix":   { "message": "秒" },
+
+  "statusDetecting": { "message": "動画を検出中..." },
+  "statusNoVideo":   { "message": "動画を開いてください" },
+  "statusDisabled":  { "message": "SpeedSense が無効です" },
+  "statusSkipping":  { "message": "無音スキップ中" },
+  "statusPlaying":   { "message": "音声検出中 — 通常再生" },
+
+  "sectionSpeed":    { "message": "速度設定" },
+  "sectionSilence":  { "message": "無音検出" },
+  "sectionOverlay":  { "message": "オーバーレイ" },
+  "sectionKeyboard": { "message": "キーボードショートカット" },
+
+  "labelNormalSpeed":    { "message": "通常速度" },
+  "labelNormalSpeedSub": { "message": "音声あり時" },
+  "labelSkipSpeed":      { "message": "スキップ速度" },
+  "labelSkipSpeedSub":   { "message": "無音時" },
+  "labelSeekSec":        { "message": "シーク秒数" },
+  "labelSeekSecSub":     { "message": "巻き戻し/早送り" },
+  "labelSpeedStep":      { "message": "速度調整幅" },
+  "labelSpeedStepSub":   { "message": "キー1回の変化量" },
+  "labelThreshold":      { "message": "しきい値" },
+  "labelThresholdSub":   { "message": "音量検出感度" },
+  "labelDelay":          { "message": "遅延" },
+  "labelDelaySub":       { "message": "判定までの時間" },
+  "labelSpectrogram":        { "message": "スペクトラグラム" },
+  "labelSpectrogramSub":     { "message": "周波数表示" },
+  "labelOverlaySpeedReset":    { "message": "速度リセット時" },
+  "labelOverlaySpeedResetSub": { "message": "1.0x 中に表示" },
+
+  "kbSpeedUp":       { "message": "通常速度 +" },
+  "kbSpeedDown":     { "message": "通常速度 −" },
+  "kbToggle":        { "message": "ON/OFF 切替" },
+  "kbToggleSub":     { "message": "SpeedSense" },
+  "kbThresholdUp":   { "message": "しきい値 +" },
+  "kbThresholdDown": { "message": "しきい値 −" },
+  "kbResetSpeed":    { "message": "速度リセット" },
+  "kbResetSpeedSub": { "message": "1.0x トグル" },
+  "kbSeekBack":      { "message": "巻き戻し" },
+  "kbSeekBackSub":   { "message": "−N秒" },
+  "kbSeekFwd":       { "message": "早送り" },
+  "kbSeekFwdSub":    { "message": "+N秒" },
+  "kbClearTitle":    { "message": "解除", "description": "キーバインド解除ボタンのツールチップ" },
+
+  "btnSupport":    { "message": "♥ サポート" },
+  "btnReset":      { "message": "リセット" },
+  "confirmReset":  { "message": "節約時間の記録をリセットしますか？" }
+}

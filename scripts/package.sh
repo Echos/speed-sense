@@ -17,6 +17,7 @@ INCLUDE=(
   popup.js
   popup.html
   i18n.js
+  _locales/
   icons/
   LICENSE
 )

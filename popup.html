@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -341,35 +341,6 @@
 
     .btn-support:hover { opacity: 1; }
 
-    /* ===== LANGUAGE SWITCHER ===== */
-    .lang-switcher {
-      display: flex;
-      gap: 4px;
-    }
-
-    .lang-btn {
-      font-size: 10px;
-      font-family: var(--mono);
-      color: var(--text-dim);
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 3px 7px;
-      cursor: pointer;
-      letter-spacing: 0.5px;
-      transition: color 0.15s, border-color 0.15s;
-    }
-
-    .lang-btn.active {
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .lang-btn:hover:not(.active) {
-      color: var(--text);
-      border-color: var(--text-mid);
-    }
-
     /* ===== VOLUME METER ===== */
     .vol-meter-wrap {
       padding: 0 16px 8px;
@@ -507,12 +478,12 @@
   <!-- STATS -->
   <div class="stats-bar">
     <div class="stat">
-      <div class="stat-label" data-i18n="stat-saved-label">節約時間</div>
+      <div class="stat-label" data-i18n="statSavedLabel">Time Saved</div>
       <div class="stat-value" id="stat-saved">0</div>
-      <div class="stat-unit" id="stat-saved-unit">秒</div>
+      <div class="stat-unit" id="stat-saved-unit">sec</div>
     </div>
     <div class="stat">
-      <div class="stat-label" data-i18n="stat-speed-label">現在の速度</div>
+      <div class="stat-label" data-i18n="statSpeedLabel">Current Speed</div>
       <div class="stat-value dim" id="stat-speed">1.0<span style="font-size:11px">x</span></div>
       <div class="stat-unit">playback rate</div>
     </div>
@@ -521,7 +492,7 @@
   <!-- SILENCE INDICATOR -->
   <div class="silence-indicator">
     <div class="dot" id="status-dot"></div>
-    <span id="status-text" data-i18n="status-detecting">動画を検出中...</span>
+    <span id="status-text" data-i18n="statusDetecting">Detecting video...</span>
   </div>
 
   <!-- VOLUME METER -->
@@ -534,12 +505,12 @@
 
   <!-- SETTINGS: SPEED -->
   <div class="section">
-    <div class="section-title" data-i18n="section-speed">速度設定</div>
+    <div class="section-title" data-i18n="sectionSpeed">Speed</div>
 
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-normal-speed">通常速度</span>
-        <small data-i18n="label-normal-speed-sub">音声あり時</small>
+        <span data-i18n="labelNormalSpeed">Normal Speed</span>
+        <small data-i18n="labelNormalSpeedSub">with audio</small>
       </div>
       <div class="slider-wrap">
         <input type="range" id="normal-speed" min="0.05" max="16.0" step="0.05" value="1.0" />
@@ -549,8 +520,8 @@
 
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-skip-speed">スキップ速度</span>
-        <small data-i18n="label-skip-speed-sub">無音時</small>
+        <span data-i18n="labelSkipSpeed">Skip Speed</span>
+        <small data-i18n="labelSkipSpeedSub">silence</small>
       </div>
       <div class="slider-wrap">
         <input type="range" class="blue" id="silence-speed" min="1.5" max="16.0" step="0.5" value="3.0" />
@@ -560,19 +531,19 @@
 
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-seek-sec">シーク秒数</span>
-        <small data-i18n="label-seek-sec-sub">巻き戻し/早送り</small>
+        <span data-i18n="labelSeekSec">Seek Seconds</span>
+        <small data-i18n="labelSeekSecSub">back / forward</small>
       </div>
       <div class="slider-wrap">
         <input type="range" id="seek-seconds" min="1" max="60" step="1" value="10" />
-        <div class="value-badge" style="font-size:11px"><span id="seek-seconds-val">10</span><span data-i18n="unit-sec-suffix">秒</span></div>
+        <div class="value-badge" style="font-size:11px"><span id="seek-seconds-val">10</span><span data-i18n="unitSecSuffix">sec</span></div>
       </div>
     </div>
 
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-speed-step">速度調整幅</span>
-        <small data-i18n="label-speed-step-sub">キー1回の変化量</small>
+        <span data-i18n="labelSpeedStep">Speed Step</span>
+        <small data-i18n="labelSpeedStepSub">per key press</small>
       </div>
       <div class="slider-wrap">
         <input type="range" id="normal-speed-step" min="0.05" max="0.5" step="0.05" value="0.05" />
@@ -583,12 +554,12 @@
 
   <!-- SETTINGS: SILENCE -->
   <div class="section">
-    <div class="section-title" data-i18n="section-silence">無音検出</div>
+    <div class="section-title" data-i18n="sectionSilence">Silence Detection</div>
 
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-threshold">しきい値</span>
-        <small data-i18n="label-threshold-sub">音量検出感度</small>
+        <span data-i18n="labelThreshold">Threshold</span>
+        <small data-i18n="labelThresholdSub">volume sensitivity</small>
       </div>
       <div class="slider-wrap">
         <input type="range" id="silence-threshold" min="0.005" max="0.08" step="0.005" value="0.015" />
@@ -598,8 +569,8 @@
 
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-delay">遅延</span>
-        <small data-i18n="label-delay-sub">判定までの時間</small>
+        <span data-i18n="labelDelay">Delay</span>
+        <small data-i18n="labelDelaySub">before silence</small>
       </div>
       <div class="slider-wrap">
         <input type="range" id="silence-delay" min="50" max="800" step="50" value="250" />
@@ -610,11 +581,11 @@
 
   <!-- SETTINGS: OVERLAY -->
   <div class="section">
-    <div class="section-title" data-i18n="section-overlay">オーバーレイ</div>
+    <div class="section-title" data-i18n="sectionOverlay">Overlay</div>
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-spectrogram">スペクトラグラム</span>
-        <small data-i18n="label-spectrogram-sub">周波数表示</small>
+        <span data-i18n="labelSpectrogram">Spectrogram</span>
+        <small data-i18n="labelSpectrogramSub">frequency view</small>
       </div>
       <label class="toggle" style="margin-left:auto">
         <input type="checkbox" id="show-spectrogram" />
@@ -624,8 +595,8 @@
     </div>
     <div class="row">
       <div class="row-label">
-        <span data-i18n="label-overlay-speed-reset">速度リセット時</span>
-        <small data-i18n="label-overlay-speed-reset-sub">1.0x 中に表示</small>
+        <span data-i18n="labelOverlaySpeedReset">On Speed Reset</span>
+        <small data-i18n="labelOverlaySpeedResetSub">show at 1.0x</small>
       </div>
       <label class="toggle" style="margin-left:auto">
         <input type="checkbox" id="show-overlay-on-speed-reset" checked />
@@ -637,77 +608,77 @@
 
   <!-- SETTINGS: KEYBOARD SHORTCUTS -->
   <div class="section" id="section-keybindings">
-    <div class="section-title" data-i18n="section-keyboard">キーボードショートカット</div>
+    <div class="section-title" data-i18n="sectionKeyboard">Keyboard Shortcuts</div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-speed-up">通常速度 +</span><small id="kb-step-up-label">+0.05x</small>
+        <span data-i18n="kbSpeedUp">Speed +</span><small id="kb-step-up-label">+0.05x</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="normalSpeedUp">&#x2014;</div>
-        <button class="kb-clear" data-action="normalSpeedUp" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="normalSpeedUp" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-speed-down">通常速度 −</span><small id="kb-step-down-label">&#x2212;0.05x</small>
+        <span data-i18n="kbSpeedDown">Speed −</span><small id="kb-step-down-label">&#x2212;0.05x</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="normalSpeedDown">&#x2014;</div>
-        <button class="kb-clear" data-action="normalSpeedDown" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="normalSpeedDown" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-toggle">ON/OFF 切替</span><small data-i18n="kb-toggle-sub">SpeedSense</small>
+        <span data-i18n="kbToggle">Toggle ON/OFF</span><small data-i18n="kbToggleSub">SpeedSense</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="toggleEnabled">&#x2014;</div>
-        <button class="kb-clear" data-action="toggleEnabled" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="toggleEnabled" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-threshold-up">しきい値 +</span><small>+0.5%</small>
+        <span data-i18n="kbThresholdUp">Threshold +</span><small>+0.5%</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="thresholdUp">&#x2014;</div>
-        <button class="kb-clear" data-action="thresholdUp" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="thresholdUp" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-threshold-down">しきい値 −</span><small>&#x2212;0.5%</small>
+        <span data-i18n="kbThresholdDown">Threshold −</span><small>&#x2212;0.5%</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="thresholdDown">&#x2014;</div>
-        <button class="kb-clear" data-action="thresholdDown" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="thresholdDown" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-reset-speed">速度リセット</span><small data-i18n="kb-reset-speed-sub">1.0x トグル</small>
+        <span data-i18n="kbResetSpeed">Speed Reset</span><small data-i18n="kbResetSpeedSub">1.0x toggle</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="toggleSpeedReset">&#x2014;</div>
-        <button class="kb-clear" data-action="toggleSpeedReset" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="toggleSpeedReset" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-seek-back">巻き戻し</span><small data-i18n="kb-seek-back-sub">&#x2212;N秒</small>
+        <span data-i18n="kbSeekBack">Seek Back</span><small data-i18n="kbSeekBackSub">−N sec</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="seekBackward">&#x2014;</div>
-        <button class="kb-clear" data-action="seekBackward" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="seekBackward" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
     <div class="kb-row">
       <div class="kb-label">
-        <span data-i18n="kb-seek-fwd">早送り</span><small data-i18n="kb-seek-fwd-sub">+N秒</small>
+        <span data-i18n="kbSeekFwd">Seek Fwd</span><small data-i18n="kbSeekFwdSub">+N sec</small>
       </div>
       <div class="kb-input-wrap">
         <div class="kb-key" data-action="seekForward">&#x2014;</div>
-        <button class="kb-clear" data-action="seekForward" data-i18n-title="kb-clear-title" title="解除">&times;</button>
+        <button class="kb-clear" data-action="seekForward" data-i18n-title="kbClearTitle" title="Clear">&times;</button>
       </div>
     </div>
   </div>
@@ -715,13 +686,9 @@
   <!-- FOOTER -->
   <div class="footer">
     <span class="footer-text" id="footer-info">v1.0.1</span>
-    <div class="lang-switcher">
-      <button class="lang-btn" data-lang="ja">JA</button>
-      <button class="lang-btn active" data-lang="en">EN</button>
-    </div>
     <div class="footer-actions">
-      <button class="btn-support" id="btn-support" data-i18n="btn-support">♥ サポート</button>
-      <button class="btn-reset" id="btn-reset" data-i18n="btn-reset">リセット</button>
+      <button class="btn-support" id="btn-support" data-i18n="btnSupport">&#x2665; Support</button>
+      <button class="btn-reset" id="btn-reset" data-i18n="btnReset">Reset</button>
     </div>
   </div>
 
