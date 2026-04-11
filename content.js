@@ -25,6 +25,7 @@
   let isInitialized     = false;
   let currentAudioTracks  = null;  // muted 状態チェック用のトラック参照
   let usingCaptureStream  = true;  // false = createMediaElementSource フォールバック中
+  let drmDetected         = false; // DRM コンテンツ検出済み（音声解析不可）
 
   let settings = {
     enabled:          true,
@@ -34,7 +35,8 @@
     silenceDelay:     250,
     seekSeconds:      10,
     normalSpeedStep:  0.05,
-    showSpectrogram:  false,
+    showSpectrogram:        false,
+    showOverlayOnSpeedReset: true,
   };
 
   let keybindings = {
@@ -54,6 +56,16 @@
   // setupAudio リトライ制御
   let setupAudioNextRetry = 0;
 
+  // encrypted イベントハンドラ（DRM コンテンツ早期検出用）
+  function onVideoEncrypted() {
+    if (setupAudioNextRetry > performance.now()) return;
+    console.warn('[SmartSpeed] DRM content detected (encrypted event), audio analysis disabled.');
+    drmDetected        = true;
+    isInitialized      = false;
+    usingCaptureStream = false;
+    setupAudioNextRetry = performance.now() + 30000;
+  }
+
   // seeking/seeked イベントハンドラ（stale captureStream 再接続用）
   function onVideoSeeking() {
     if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
@@ -64,6 +76,21 @@
     if (!usingCaptureStream) return;
     console.warn('[SmartSpeed] seeked detected, reconnecting audio stream...');
     resetAudio();
+  }
+
+  // Netflix 等が video インスタンスの playbackRate を上書きしてもプロトタイプ経由でセットする
+  const _nativePlaybackRateDesc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'playbackRate');
+  const _nativeSetPlaybackRate  = _nativePlaybackRateDesc?.set;
+  const _nativeGetPlaybackRate  = _nativePlaybackRateDesc?.get;
+  function setPlaybackRate(video, rate) {
+    if (_nativeSetPlaybackRate) {
+      _nativeSetPlaybackRate.call(video, rate);
+    } else {
+      video.playbackRate = rate;
+    }
+  }
+  function getPlaybackRate(video) {
+    return _nativeGetPlaybackRate ? _nativeGetPlaybackRate.call(video) : video.playbackRate;
   }
 
   // 速度ランプ（線形補間）
@@ -115,14 +142,16 @@
 
     if (video !== currentVideoEl) {
       if (currentVideoEl) {
-        currentVideoEl.removeEventListener('seeking', onVideoSeeking);
-        currentVideoEl.removeEventListener('seeked',  onVideoSeeked);
+        currentVideoEl.removeEventListener('seeking',   onVideoSeeking);
+        currentVideoEl.removeEventListener('seeked',    onVideoSeeked);
+        currentVideoEl.removeEventListener('encrypted', onVideoEncrypted);
       }
       resetAudio();
       currentVideoEl = video;
-      video.playbackRate = settings.normalSpeed;
-      video.addEventListener('seeking', onVideoSeeking);
-      video.addEventListener('seeked',  onVideoSeeked);
+      setPlaybackRate(video, settings.normalSpeed);
+      video.addEventListener('seeking',   onVideoSeeking);
+      video.addEventListener('seeked',    onVideoSeeked);
+      video.addEventListener('encrypted', onVideoEncrypted);
     }
 
     // オーバーレイは常に更新（一時停止・無効時も設定変更を即時反映）
@@ -138,11 +167,14 @@
     }
 
     if (!audioContext || audioContext.state === 'closed') {
-      setupAudio(video);
-      return;
+      if (!drmDetected) {
+        setupAudio(video);
+        return;  // 音声セットアップ待ち
+      }
+      // DRM: audioContext は作れないが速度制御は継続
     }
 
-    if (audioContext.state === 'suspended') {
+    if (audioContext && audioContext.state === 'suspended') {
       audioContext.resume();
       return;
     }
@@ -153,12 +185,14 @@
     }
 
     if (isSpeedReset) {
-      video.playbackRate = 1.0;
+      if (Math.abs(getPlaybackRate(video) - 1.0) > 0.005) setPlaybackRate(video, 1.0);
       return;
     }
 
     currentVolume = getVolume();
-    processSilence(video, currentVolume);
+    if (!drmDetected) {
+      processSilence(video, currentVolume);
+    }
     applySpeedRamp(video, now);
   }
 
@@ -170,6 +204,16 @@
     isInitialized = true;
 
     try {
+      // DRM コンテンツ（MediaKeys 設定済み）は captureStream が無音データを返すため解析不可
+      if (video.mediaKeys) {
+        console.warn('[SmartSpeed] DRM content detected (mediaKeys), audio analysis disabled.');
+        drmDetected        = true;
+        isInitialized      = false;
+        usingCaptureStream = false;
+        setupAudioNextRetry = now + 30000;
+        return;
+      }
+
       audioContext = new AudioContext();
       analyser = audioContext.createAnalyser();
       analyser.fftSize = 256;
@@ -215,6 +259,7 @@
           console.warn('[SmartSpeed] DRM content detected, audio analysis disabled on this page.');
           audioContext.close();
           audioContext       = null;
+          drmDetected        = true;
           isInitialized      = false;
           usingCaptureStream = false; // seeked ハンドラの再トリガーを防ぐ
           // 30秒後まで再試行しない（ページ遷移やリロードで再挑戦）
@@ -238,7 +283,7 @@
   function resetAudio() {
     // silenceSpeed のまま固着するのを防ぐ
     if (isSilent && currentVideoEl) {
-      currentVideoEl.playbackRate = settings.normalSpeed;
+      setPlaybackRate(currentVideoEl, settings.normalSpeed);
     }
     if (audioContext) {
       try { audioContext.close(); } catch (_) {}
@@ -248,6 +293,7 @@
     dataArray          = null;
     currentAudioTracks = null;
     usingCaptureStream = true;
+    drmDetected        = false;
     isSilent           = false;
     silenceTimer && clearTimeout(silenceTimer);
     silenceTimer     = null;
@@ -277,9 +323,25 @@
   }
 
   function applySpeedRamp(video, now) {
-    if (speedRampTo === null) return;
+    if (speedRampTo === null) {
+      // 定常時：バッファリング中は強制しない（Netflix の ABR を妨げない）
+      if (video.readyState < 3) return;
+      // 実際にズレているときだけ再設定（不要な ratechange を防ぐ）
+      const target  = isSilent ? settings.silenceSpeed : settings.normalSpeed;
+      const current = getPlaybackRate(video);
+      if (Math.abs(current - target) > 0.005) {
+        setPlaybackRate(video, target);
+      }
+      return;
+    }
+    // DRM コンテンツはランプをスキップして即時適用（ratechange を1回に抑える）
+    if (drmDetected) {
+      setPlaybackRate(video, speedRampTo);
+      cancelSpeedRamp();
+      return;
+    }
     const t = Math.min(1, (now - speedRampStart) / speedRampDuration);
-    video.playbackRate = speedRampFrom + (speedRampTo - speedRampFrom) * t;
+    setPlaybackRate(video, speedRampFrom + (speedRampTo - speedRampFrom) * t);
     if (t >= 1) cancelSpeedRamp();
   }
 
@@ -482,6 +544,18 @@
     el.style.right  = 'auto';
     el.style.bottom = 'auto';
 
+    // SpeedSense が OFF の場合はオーバーレイを非表示
+    if (!settings.enabled) {
+      el.style.opacity = '0';
+      return;
+    }
+
+    // 速度リセット中かつ非表示設定の場合もオーバーレイを非表示
+    if (isSpeedReset && !settings.showOverlayOnSpeedReset) {
+      el.style.opacity = '0';
+      return;
+    }
+
     const color = isSpeedReset ? 'rgba(255,255,255,0.55)'
                 : isSilent     ? '#0077ff'
                 :                '#00e5a0';
@@ -612,7 +686,7 @@
     cancelSpeedRamp();
     if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
     isSilent = false;
-    if (video) video.playbackRate = 1.0;
+    if (video) setPlaybackRate(video, 1.0);
   }
 
   function exitSpeedReset(video) {
@@ -652,7 +726,7 @@
       const video = getVideo();
       if (video) {
         if (isSpeedReset) {
-          video.playbackRate = 1.0;
+          setPlaybackRate(video, 1.0);
         } else if (isSilent) {
           setTargetSpeed(video, settings.silenceSpeed);
         } else {

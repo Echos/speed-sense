@@ -22,7 +22,8 @@ const seekSecondsEl      = document.getElementById('seek-seconds');
 const seekSecondsVal     = document.getElementById('seek-seconds-val');
 const normalSpeedStepEl  = document.getElementById('normal-speed-step');
 const normalSpeedStepVal = document.getElementById('normal-speed-step-val');
-const showSpectrogramEl  = document.getElementById('show-spectrogram');
+const showSpectrogramEl          = document.getElementById('show-spectrogram');
+const showOverlayOnSpeedResetEl  = document.getElementById('show-overlay-on-speed-reset');
 const btnReset           = document.getElementById('btn-reset');
 const btnSupport         = document.getElementById('btn-support');
 const volFill          = document.getElementById('vol-fill');
@@ -84,7 +85,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         silenceDelay:     s.silenceDelay     !== undefined ? s.silenceDelay     : 250,
         seekSeconds:      s.seekSeconds      !== undefined ? s.seekSeconds      : 10,
         normalSpeedStep:  s.normalSpeedStep  !== undefined ? s.normalSpeedStep  : 0.05,
-        showSpectrogram:  s.showSpectrogram  !== undefined ? s.showSpectrogram  : false,
+        showSpectrogram:        s.showSpectrogram        !== undefined ? s.showSpectrogram        : false,
+        showOverlayOnSpeedReset: s.showOverlayOnSpeedReset !== undefined ? s.showOverlayOnSpeedReset : true,
       });
 
       const savedKb = result[keybindingsKey] || result['smartSpeedKeybindings'];
@@ -119,7 +121,8 @@ function applySettings(s) {
   seekSecondsEl.value        = s.seekSeconds;
   seekSecondsVal.textContent = s.seekSeconds;
 
-  showSpectrogramEl.checked = !!s.showSpectrogram;
+  showSpectrogramEl.checked         = !!s.showSpectrogram;
+  showOverlayOnSpeedResetEl.checked = s.showOverlayOnSpeedReset !== false;
 
   const step = s.normalSpeedStep ?? 0.05;
   normalSpeedStepEl.value        = step;
@@ -140,7 +143,8 @@ function saveSettings() {
       silenceDelay:     parseInt(silenceDelayEl.value, 10),
       seekSeconds:      parseInt(seekSecondsEl.value, 10),
       normalSpeedStep:  parseFloat(normalSpeedStepEl.value),
-      showSpectrogram:  showSpectrogramEl.checked,
+      showSpectrogram:        showSpectrogramEl.checked,
+      showOverlayOnSpeedReset: showOverlayOnSpeedResetEl.checked,
     },
   });
 }
@@ -223,6 +227,10 @@ normalSpeedStepEl.addEventListener('input', () => {
 });
 
 showSpectrogramEl.addEventListener('change', () => {
+  saveSettings();
+});
+
+showOverlayOnSpeedResetEl.addEventListener('change', () => {
   saveSettings();
 });
 
