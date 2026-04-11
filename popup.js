@@ -2,6 +2,9 @@
  * SpeedSense - Popup Script
  */
 
+// i18n.js より先にロードされることを前提に applyTranslations() を即時実行
+applyTranslations();
+
 // ========== DOM 参照 ==========
 const toggleEnabled    = document.getElementById('toggle-enabled');
 const toggleLabel      = document.getElementById('toggle-label');
@@ -22,14 +25,14 @@ const seekSecondsEl      = document.getElementById('seek-seconds');
 const seekSecondsVal     = document.getElementById('seek-seconds-val');
 const normalSpeedStepEl  = document.getElementById('normal-speed-step');
 const normalSpeedStepVal = document.getElementById('normal-speed-step-val');
-const showSpectrogramEl          = document.getElementById('show-spectrogram');
-const showOverlayOnSpeedResetEl  = document.getElementById('show-overlay-on-speed-reset');
-const btnReset           = document.getElementById('btn-reset');
-const btnSupport         = document.getElementById('btn-support');
-const volFill          = document.getElementById('vol-fill');
-const volThreshold     = document.getElementById('vol-threshold');
-const kbKeys           = document.querySelectorAll('.kb-key');
-const kbClears         = document.querySelectorAll('.kb-clear');
+const showSpectrogramEl         = document.getElementById('show-spectrogram');
+const showOverlayOnSpeedResetEl = document.getElementById('show-overlay-on-speed-reset');
+const btnReset   = document.getElementById('btn-reset');
+const btnSupport = document.getElementById('btn-support');
+const volFill      = document.getElementById('vol-fill');
+const volThreshold = document.getElementById('vol-threshold');
+const kbKeys   = document.querySelectorAll('.kb-key');
+const kbClears = document.querySelectorAll('.kb-clear');
 
 // ========== ドメイン別設定キー ==========
 let settingsKey    = 'smartSpeedSettings_unknown';
@@ -61,12 +64,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   }
 
   chrome.storage.local.get(
-    [settingsKey, 'smartSpeedSettings', keybindingsKey, 'smartSpeedKeybindings', 'totalSavedSeconds', 'speedSenseLang'],
+    [settingsKey, 'smartSpeedSettings', keybindingsKey, 'smartSpeedKeybindings', 'totalSavedSeconds'],
     (result) => {
-      // 言語設定を適用
-      currentLang = result.speedSenseLang || 'en';
-      applyTranslations();
-
       // 旧キーからドメイン別キーへ移行
       if (!result[settingsKey] && result['smartSpeedSettings']) {
         chrome.storage.local.set({ [settingsKey]: result['smartSpeedSettings'] });
@@ -78,13 +77,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const saved = result.totalSavedSeconds || 0;
 
       applySettings({
-        enabled:          s.enabled          !== undefined ? s.enabled          : true,
-        normalSpeed:      s.normalSpeed      !== undefined ? s.normalSpeed      : 1.0,
-        silenceSpeed:     s.silenceSpeed     !== undefined ? s.silenceSpeed     : 3.0,
-        silenceThreshold: s.silenceThreshold !== undefined ? s.silenceThreshold : 0.015,
-        silenceDelay:     s.silenceDelay     !== undefined ? s.silenceDelay     : 250,
-        seekSeconds:      s.seekSeconds      !== undefined ? s.seekSeconds      : 10,
-        normalSpeedStep:  s.normalSpeedStep  !== undefined ? s.normalSpeedStep  : 0.05,
+        enabled:                s.enabled                !== undefined ? s.enabled                : true,
+        normalSpeed:            s.normalSpeed            !== undefined ? s.normalSpeed            : 1.0,
+        silenceSpeed:           s.silenceSpeed           !== undefined ? s.silenceSpeed           : 3.0,
+        silenceThreshold:       s.silenceThreshold       !== undefined ? s.silenceThreshold       : 0.015,
+        silenceDelay:           s.silenceDelay           !== undefined ? s.silenceDelay           : 250,
+        seekSeconds:            s.seekSeconds            !== undefined ? s.seekSeconds            : 10,
+        normalSpeedStep:        s.normalSpeedStep        !== undefined ? s.normalSpeedStep        : 0.05,
         showSpectrogram:        s.showSpectrogram        !== undefined ? s.showSpectrogram        : false,
         showOverlayOnSpeedReset: s.showOverlayOnSpeedReset !== undefined ? s.showOverlayOnSpeedReset : true,
       });
@@ -136,13 +135,13 @@ function applySettings(s) {
 function saveSettings() {
   chrome.storage.local.set({
     [settingsKey]: {
-      enabled:          toggleEnabled.checked,
-      normalSpeed:      parseFloat(normalSpeedEl.value),
-      silenceSpeed:     parseFloat(silenceSpeedEl.value),
-      silenceThreshold: parseFloat(silenceThreshEl.value),
-      silenceDelay:     parseInt(silenceDelayEl.value, 10),
-      seekSeconds:      parseInt(seekSecondsEl.value, 10),
-      normalSpeedStep:  parseFloat(normalSpeedStepEl.value),
+      enabled:                toggleEnabled.checked,
+      normalSpeed:            parseFloat(normalSpeedEl.value),
+      silenceSpeed:           parseFloat(silenceSpeedEl.value),
+      silenceThreshold:       parseFloat(silenceThreshEl.value),
+      silenceDelay:           parseInt(silenceDelayEl.value, 10),
+      seekSeconds:            parseInt(seekSecondsEl.value, 10),
+      normalSpeedStep:        parseFloat(normalSpeedStepEl.value),
       showSpectrogram:        showSpectrogramEl.checked,
       showOverlayOnSpeedReset: showOverlayOnSpeedResetEl.checked,
     },
@@ -234,14 +233,14 @@ showOverlayOnSpeedResetEl.addEventListener('change', () => {
   saveSettings();
 });
 
-/// ========== ボタン: サポート ==========
+// ========== ボタン: サポート ==========
 btnSupport.addEventListener('click', () => {
   chrome.tabs.create({ url: 'https://ko-fi.com/echos0507' });
 });
 
 // ========== ボタン: 節約時間リセット ==========
 btnReset.addEventListener('click', () => {
-  if (!confirm(t('confirm-reset'))) return;
+  if (!confirm(t('confirmReset'))) return;
   sendToContent({ type: 'resetSavedTime' }, () => updateSavedDisplay(0));
   chrome.storage.local.set({ totalSavedSeconds: 0 });
 });
@@ -251,13 +250,13 @@ function updateSavedDisplay(seconds) {
   seconds = Math.max(0, seconds);
   if (seconds < 60) {
     statSaved.textContent     = Math.round(seconds);
-    statSavedUnit.textContent = t('unit-sec');
+    statSavedUnit.textContent = t('unitSec');
   } else if (seconds < 3600) {
     statSaved.textContent     = (seconds / 60).toFixed(1);
-    statSavedUnit.textContent = t('unit-min');
+    statSavedUnit.textContent = t('unitMin');
   } else {
     statSaved.textContent     = (seconds / 3600).toFixed(2);
-    statSavedUnit.textContent = t('unit-hour');
+    statSavedUnit.textContent = t('unitHour');
   }
 }
 
@@ -282,7 +281,7 @@ function poll() {
   sendToContent({ type: 'getStatus' }, (res) => {
     if (!res) {
       statusDot.className    = 'dot';
-      statusText.textContent = t('status-no-video');
+      statusText.textContent = t('statusNoVideo');
       statSpeed.innerHTML    = '—';
       volFill.style.width    = '0%';
       return;
@@ -295,13 +294,13 @@ function poll() {
 
     if (!res.enabled) {
       statusDot.className    = 'dot';
-      statusText.textContent = t('status-disabled');
+      statusText.textContent = t('statusDisabled');
     } else if (res.isSilent) {
       statusDot.className    = 'dot skipping';
-      statusText.textContent = `${t('status-skipping')} (${res.currentSpeed?.toFixed(1) ?? '—'}x)`;
+      statusText.textContent = `${t('statusSkipping')} (${res.currentSpeed?.toFixed(1) ?? '—'}x)`;
     } else {
       statusDot.className    = 'dot active';
-      statusText.textContent = t('status-playing');
+      statusText.textContent = t('statusPlaying');
     }
 
     volFill.style.width = Math.min(100, (res.currentVolume || 0) * 100 / 0.08) + '%';
@@ -310,18 +309,6 @@ function poll() {
     volThreshold.style.left = Math.min(100, parseFloat(silenceThreshEl.value) * 100 / 0.08) + '%';
   });
 }
-
-// ========== 言語切替 ==========
-document.querySelectorAll('.lang-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (btn.dataset.lang === currentLang) return;
-    currentLang = btn.dataset.lang;
-    chrome.storage.local.set({ speedSenseLang: currentLang });
-    applyTranslations();
-    // 動的テキストも即時更新
-    poll();
-  });
-});
 
 // ========== キーバインド キャプチャ ==========
 kbKeys.forEach((el) => {

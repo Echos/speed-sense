@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "SpeedSense",
+  "name": "__MSG_extName__",
   "version": "1.0.1",
-  "description": "Auto-detects silence and speeds up videos. Works on any site with a video element.",
+  "default_locale": "en",
+  "description": "__MSG_extDescription__",
   "permissions": [
     "storage",
     "tabs"
