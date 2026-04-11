@@ -59,8 +59,10 @@ saved += (silenceSpeed / normalSpeed - 1) × 無音区間の実経過時間(秒)
   silenceSpeed:     number,   // 無音時スキップ速度 (1.5〜16.0, step 0.5)
   silenceThreshold: number,   // 音量しきい値 0〜1（UI 表示は ×100 の % 値、実効範囲 0.005〜0.08）
   silenceDelay:     number,   // 無音判定遅延 ms (50〜800, step 50)
-  seekSeconds:      number,   // 巻き戻し/早送り秒数 (1〜60, デフォルト 10)
-  showSpectrogram:  boolean,  // スペクトラグラム表示 ON/OFF（デフォルト false）
+  seekSeconds:             number,   // 巻き戻し/早送り秒数 (1〜60, デフォルト 10)
+  showSpectrogram:         boolean,  // スペクトラグラム表示 ON/OFF（デフォルト false）
+  showOverlayOnSpeedReset: boolean,  // 速度リセット（1.0x トグル）中にオーバーレイを表示するか（デフォルト true）
+  // ※ enabled=false 時はオーバーレイを常に非表示
 }
 
 // smartSpeedKeybindings

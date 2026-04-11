@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SpeedSense",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Auto-detects silence and speeds up videos. Works on any site with a video element.",
   "permissions": [
     "storage",
