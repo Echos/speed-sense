@@ -60,3 +60,16 @@ English
 ## Tags (up to 5)
 
 video speed, silence skip, auto speed, playback control, lecture speed
+
+---
+
+## Changelog
+
+**v1.0.2**
+- YouTube live streams: speed is automatically locked to 1.0x at the live edge
+- Time-shifted playback (rewound 60+ seconds) re-enables speed control
+
+**v1.0.1**
+- Migrated to Chrome's official i18n API for improved multilingual support
+- Overlay is now hidden when SpeedSense is disabled
+- Added option to show/hide overlay during 1.0x speed-reset toggle

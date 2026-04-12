@@ -101,6 +101,10 @@
   const SPEED_RAMP_MS_ENTER = 400;  // 無音に入るときのランプ時間
   const SPEED_RAMP_MS_EXIT  = 120;  // 無音から出るときのランプ時間（頭切れ低減）
 
+  // ライブ配信制御
+  const LIVE_EDGE_THRESHOLD_SEC = 60;   // 汎用ライブストリーム用: seekable.end との差がこの秒数以内ならライブエッジ
+  let isLiveLocked = false;             // 現在ライブエッジにいるか（速度ロック中か）
+
   // 音量履歴リングバッファ（先読みトレンド検出用）
   const VOLUME_HISTORY_SIZE = 30;  // ~500ms @60fps
   const volumeHistory = new Float32Array(VOLUME_HISTORY_SIZE);
@@ -185,6 +189,15 @@
     }
 
     if (isSpeedReset) {
+      if (Math.abs(getPlaybackRate(video) - 1.0) > 0.005) setPlaybackRate(video, 1.0);
+      return;
+    }
+
+    // ライブ配信のライブエッジ中は速度を 1.0x に固定
+    isLiveLocked = checkLiveEdge(video);
+    if (isLiveLocked) {
+      if (isSilent) endSilence(video);
+      cancelSpeedRamp();
       if (Math.abs(getPlaybackRate(video) - 1.0) > 0.005) setPlaybackRate(video, 1.0);
       return;
     }
@@ -320,6 +333,28 @@
     speedRampFrom  = null;
     speedRampTo    = null;
     speedRampStart = null;
+  }
+
+  /**
+   * ライブ配信かつライブエッジにいるか判定する。
+   *
+   * YouTube の場合:
+   *   .ytp-live-badge[disabled] → ライブエッジ（1.0x 固定）
+   *   .ytp-live-badge が disabled なし → タイムシフト再生中（速度制御有効）
+   *
+   * 汎用ライブストリーム（duration === Infinity）:
+   *   seekable.end() - currentTime <= LIVE_EDGE_THRESHOLD_SEC でライブエッジ判定
+   */
+  function checkLiveEdge(video) {
+    // YouTube ライブ: .ytp-live-badge の disabled 属性で判定
+    const liveBadge = document.querySelector('.ytp-live-badge');
+    if (liveBadge) return liveBadge.hasAttribute('disabled');
+
+    // 汎用ライブストリーム（duration === Infinity）
+    if (video.duration !== Infinity) return false;
+    if (video.seekable.length === 0) return true;
+    const liveEnd = video.seekable.end(video.seekable.length - 1);
+    return (liveEnd - video.currentTime) <= LIVE_EDGE_THRESHOLD_SEC;
   }
 
   function applySpeedRamp(video, now) {
