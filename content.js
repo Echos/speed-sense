@@ -142,7 +142,10 @@
     animFrameId = requestAnimationFrame(mainLoop);
 
     const video = getVideo();
-    if (!video) return;
+    if (!video) {
+      if (overlayEl) overlayEl.style.opacity = '0';
+      return;
+    }
 
     if (video !== currentVideoEl) {
       if (currentVideoEl) {
@@ -561,15 +564,20 @@
   function updateIndicator(video) {
     const el = getOrCreateOverlay();
 
+    const vr = video.getBoundingClientRect();
+    // ビデオが非表示・サイズゼロ（マウスオーバー再生サイトで動画が消えた等）の場合はオーバーレイも隠す
+    if (vr.width < 1 || vr.height < 1) {
+      el.style.opacity = '0';
+      return;
+    }
+
     // 初回配置: 動画の左上付近
     if (overlayPos.left === null) {
-      const rect = video.getBoundingClientRect();
-      overlayPos.left = rect.left + 12;
-      overlayPos.top  = rect.top  + 12;
+      overlayPos.left = vr.left + 12;
+      overlayPos.top  = vr.top  + 12;
     }
 
     // ビデオ枠内にクランプ（毎フレーム、リサイズ・スクロールに追従）
-    const vr = video.getBoundingClientRect();
     const ow = el.offsetWidth  || 80;
     const oh = el.offsetHeight || 40;
     overlayPos.left = Math.max(vr.left, Math.min(overlayPos.left, vr.right  - ow));
