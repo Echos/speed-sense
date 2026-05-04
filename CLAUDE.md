@@ -100,6 +100,9 @@ saved += (silenceSpeed / normalSpeed - 1) × 無音区間の実経過時間(秒)
 `updateIndicator()` が毎フレーム `video.getBoundingClientRect()` を取得し、`overlayPos` をビデオ要素の矩形内に収める。
 ドラッグ中も `mousemove` ハンドラ内で同様のクランプを適用するため、枠外にはみ出せない。
 
+ビデオ要素が非表示（サイズゼロ）になった、または DOM から削除された場合は、オーバーレイを `opacity: 0` にして隠す。
+これがないとマウスオーバー再生サイト（X/Twitter のサムネイル動画など）でクランプ結果が `(0,0)` に潰れ、画面左上にオーバーレイが固着する。
+
 ---
 
 ## popup.js の重要な設計判断
